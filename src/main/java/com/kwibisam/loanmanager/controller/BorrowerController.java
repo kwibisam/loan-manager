@@ -83,7 +83,7 @@ public class BorrowerController {
 
         if(nrc != null) {
             log.info("NRC  IS NOTNULL");
-//            return ResponseEntity.ok(List.of(borrowerService.getBorrowerByNrc(nrc)));
+            return ResponseEntity.ok(List.of(borrowerService.getBorrowerByNrc(nrc)));
         }
         return ResponseEntity.ok(borrowerService.getAllBorrowers());
     }

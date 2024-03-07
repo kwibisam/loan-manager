@@ -1,9 +1,9 @@
 package com.kwibisam.loanmanager.service;
 
 import com.kwibisam.loanmanager.domain.Borrower;
+import com.kwibisam.loanmanager.exception.ResourceNotFoundException;
 import com.kwibisam.loanmanager.repository.BorrowerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
