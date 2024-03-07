@@ -24,7 +24,19 @@ public class BorrowerService {
         return optional.get();
     }
 
+    public Borrower getBorrowerByNrc(String nrc) {
+        Optional<Borrower> optional = borrowerRepository.findByNrc(nrc);
+        if (optional.isEmpty()){
+            throw new ResourceNotFoundException("borrower not found");
+        }
+        return optional.get();
+    }
+
     public List<Borrower> getAllBorrowers() {
         return borrowerRepository.findAll();
+    }
+
+    public Long countActiveBorrowers() {
+        return borrowerRepository.countActiveBorrowers();
     }
 }

@@ -10,4 +10,7 @@ import java.util.Optional;
 
 public interface BorrowerRepository extends JpaRepository<Borrower, Long> {
     Optional<Borrower> findByPhone(String phone);
+    Optional<Borrower> findByNrc(String nrc);
+    @Query("SELECT COUNT(DISTINCT b) FROM Borrower b JOIN b.loans l WHERE l.isDisbursed = true")
+    Long countActiveBorrowers();
 }

@@ -10,4 +10,12 @@ import java.util.List;
 public interface LoanRepository extends JpaRepository<Loan, Long> {
     public List<Loan> findByStatus(String status);
     public List<Loan> findByIsDisbursed(Boolean isDisbursed);
+
+    @Query("SELECT COUNT(l) FROM Loan l")
+    long countAllLoans();
+
+    List<Loan> findByIsDisbursedTrue();
+
+    long countByIsDisbursedTrue();
+
 }

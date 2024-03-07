@@ -5,6 +5,7 @@ import com.kwibisam.loanmanager.repository.BorrowerRepository;
 import com.kwibisam.loanmanager.service.BorrowerService;
 import com.kwibisam.loanmanager.service.StorageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +14,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/borrowers")
 @RequiredArgsConstructor
@@ -72,7 +75,16 @@ public class BorrowerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Borrower>> getBorrowersList() {
+    public ResponseEntity<List<Borrower>> getBorrowersList(@RequestParam(name = "nrc",required = false) String nrc) {
+        if(nrc == null) {
+            log.info("NRC  IS NULL");
+//            return ResponseEntity.ok(List.of(borrowerService.getBorrowerByNrc(nrc)));
+        }
+
+        if(nrc != null) {
+            log.info("NRC  IS NOTNULL");
+//            return ResponseEntity.ok(List.of(borrowerService.getBorrowerByNrc(nrc)));
+        }
         return ResponseEntity.ok(borrowerService.getAllBorrowers());
     }
 
@@ -81,4 +93,5 @@ public class BorrowerController {
         Borrower borrower = borrowerService.getBorrowerById(id);
         return ResponseEntity.ok(borrower);
     }
+
 }

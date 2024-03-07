@@ -87,6 +87,16 @@ public class LoanController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<LoanStats> getLoanStats(){
+        long all = loanRepository.countAllLoans();
+        long active =loanRepository.countByIsDisbursedTrue();
+        LoanStats stats = new LoanStats();
+        stats.setActiveLoans(active);
+        stats.setTotalLoans(all);
+        return ResponseEntity.ok(stats);
+    }
+
 //        DISBURSEMENT                 //
 
     @PostMapping("/{id}/disbursement")
