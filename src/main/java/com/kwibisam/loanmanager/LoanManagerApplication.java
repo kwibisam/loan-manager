@@ -71,7 +71,7 @@ public class LoanManagerApplication implements CommandLineRunner {
 		LoanProduct monthly = new LoanProduct(MONTHLY, 0.2);
 		LoanProduct weekly = new LoanProduct(WEEKLY, 0.1);
 		LoanProduct biweekly = new LoanProduct(BIWEEKLY, 0.15);
-		loanProductRepository.saveAll(Arrays.asList(monthly,weekly, biweekly));
+//		loanProductRepository.saveAll(Arrays.asList(monthly,weekly, biweekly));
 		for(LoanProduct loanProduct : loanProductRepository.findAll()) {
 			log.info("Type Name: {}, Interest Rate: {}", loanProduct.getFrequency(), loanProduct.getInterestRate());
 		}
