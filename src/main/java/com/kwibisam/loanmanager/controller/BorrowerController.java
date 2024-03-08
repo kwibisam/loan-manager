@@ -26,7 +26,7 @@ public class BorrowerController {
     private final BorrowerService borrowerService;
     private final StorageService storageService;
     @PostMapping
-    public ResponseEntity<Void> createBorrower(@RequestParam("nrcFile") MultipartFile nrcFile,
+    public ResponseEntity<Void> createBorrower(@RequestParam(name="nrcFile",required = false) MultipartFile nrcFile,
                                                @RequestParam("firstName") String firstName,
                                                @RequestParam("lastName") String lastName,
                                                @RequestParam("addressLine1") String addressLine1,
@@ -36,7 +36,7 @@ public class BorrowerController {
                                                @RequestParam("dob") String dob,
                                                @RequestParam("income") Double income,
                                                @RequestParam("gender") String gender,
-                                               @RequestParam("attachments") List<MultipartFile> attachments) throws IOException {
+                                               @RequestParam(name = "attachments",required = false) List<MultipartFile> attachments) throws IOException {
 
         // Create Borrower object
         Borrower borrower = new Borrower();
@@ -53,16 +53,19 @@ public class BorrowerController {
         // Save borrower
         Borrower saved = borrowerService.saveBorrower(borrower);
         Long id = saved.getId();
+        if(nrcFile != null){
+            // Handle file upload
+            if (!nrcFile.isEmpty()) {
+                storageService.saveDocument(nrcFile,"nrc",id);
+            }
 
-        // Handle file upload
-        if (!nrcFile.isEmpty()) {
-            storageService.saveDocument(nrcFile,"nrc",id);
         }
-
-        // Handle other attachments
-        for (MultipartFile attachment : attachments) {
-            if (!attachment.isEmpty()) {
-                storageService.saveDocument(attachment,"attachment",id);
+        if(attachments != null){
+            // Handle other attachments
+            for (MultipartFile attachment : attachments) {
+                if (!attachment.isEmpty()) {
+                    storageService.saveDocument(attachment,"attachment",id);
+                }
             }
         }
 
