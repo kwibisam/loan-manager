@@ -7,4 +7,5 @@ public class LoanStats {
     private Long totalLoans;
     private Long activeLoans;
     private Long activeBorrowers;
+    private Double portfolioSize;
 }

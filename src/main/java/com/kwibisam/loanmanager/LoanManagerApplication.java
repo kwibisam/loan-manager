@@ -119,7 +119,6 @@ public class LoanManagerApplication implements CommandLineRunner {
 				loanRepository.save(activeLoan);
 			}
 		}
-
-
+		log.info("portfolio-size:{}",loanRepository.sumOfDisbursedLoanAmounts());
 	}
 }

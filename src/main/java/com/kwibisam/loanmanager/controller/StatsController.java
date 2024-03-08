@@ -21,10 +21,12 @@ public class StatsController {
         long activeBorrowers = borrowerService.countActiveBorrowers();
         long activeLoans = loanRepository.countByIsDisbursedTrue();
         long allLoans = loanRepository.countAllLoans();
+        double portSize = loanRepository.sumOfDisbursedLoanAmounts();
         LoanStats stats = new LoanStats();
         stats.setTotalLoans(allLoans);
         stats.setActiveLoans(activeLoans);
         stats.setActiveBorrowers(activeBorrowers);
+        stats.setPortfolioSize(portSize);
         return ResponseEntity.ok(stats);
     }
 }

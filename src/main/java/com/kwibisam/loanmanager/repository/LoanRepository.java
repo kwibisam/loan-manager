@@ -17,6 +17,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     List<Loan> findByIsDisbursedTrue();
 
     long countByIsDisbursedTrue();
+    @Query("SELECT SUM(l.loanAmount) FROM Loan l WHERE l.isDisbursed = true")
+    Double sumOfDisbursedLoanAmounts();
 
 
 }
