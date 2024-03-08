@@ -3,13 +3,16 @@ package com.kwibisam.loanmanager.service;
 import com.kwibisam.loanmanager.domain.Loan;
 import com.kwibisam.loanmanager.domain.PayDate;
 import com.kwibisam.loanmanager.domain.PaymentHistory;
+import com.kwibisam.loanmanager.exception.IllegalUpdateException;
+import com.kwibisam.loanmanager.exception.ResourceNotFoundException;
 import com.kwibisam.loanmanager.repository.LoanRepository;
 import com.kwibisam.loanmanager.repository.PaymentHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +28,24 @@ public class PaymentHistoryService {
         Loan theLoan = loanRepository.findById(loanId)
                         .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
         if(theLoan.getLoanBalance() == 0){
-            throw new RuntimeException("Loan balance is zero");
+            throw new IllegalUpdateException("Loan balance is zero");
         }
         paymentHistory.setLoan(theLoan);
         PaymentHistory saved = paymentHistoryRepository.save(paymentHistory);
         //update earliest due or pending date
         updatePayDate(loanId);
+
+        Optional<PayDate> optional =
+                payDateService.findEarliestDueOrPendingPayDate(loanId);
+        if(optional.isPresent()) {
+            PayDate payDate = optional.get();
+            LocalDate end = payDate.getDate();
+            LocalDate today2 = LocalDate.now();
+            long daysDifference = ChronoUnit.DAYS.between(today2, end);
+            log.info("Number of days between today and end date: " + daysDifference);
+            theLoan.setDaysUntilNextPay(daysDifference);
+            theLoan.setNextPayDate(end);
+        }
         //update loan balance
         double newBalance = theLoan.getLoanBalance() - saved.getAmountPaid();
         if(newBalance == 0) {
@@ -57,6 +72,7 @@ public class PaymentHistoryService {
             payDate.setStatus("paid");
             payDateService.savePayDate(payDate);
         }
+
     }
 
     public void updatePayment(Long id, PaymentHistory patch) {

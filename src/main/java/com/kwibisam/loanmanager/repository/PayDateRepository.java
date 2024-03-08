@@ -15,6 +15,10 @@ public interface PayDateRepository extends JpaRepository<PayDate, Long> {
     @Query("SELECT pd FROM PayDate pd WHERE pd.loan.id = :loanId AND pd.status = 'due' ORDER BY pd.date ASC LIMIT 1")
     Optional<PayDate> findEarliestDueDateByLoanId(@Param("loanId") Long loanId);
 
+    @Query("SELECT pd FROM PayDate pd WHERE pd.loan.id = :loanId AND (pd.status = 'due' OR pd.status = 'pending') ORDER BY pd.date ASC LIMIT 1")
+    Optional<PayDate> findEarliestDueOrPendingDateByLoanId(@Param("loanId") Long loanId);
+
+
     @Query("SELECT pd FROM PayDate pd WHERE pd.loan.id = :loanId AND pd.status = 'pending' ORDER BY pd.date ASC LIMIT 1")
     Optional<PayDate> findEarliestPendingDateByLoanId(@Param("loanId") Long loanId);
 

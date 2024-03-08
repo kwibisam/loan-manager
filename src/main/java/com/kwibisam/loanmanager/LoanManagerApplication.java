@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,6 +103,23 @@ public class LoanManagerApplication implements CommandLineRunner {
 			Loan loan = payDate.getLoan();
 			log.info("the loan: {}" ,loan.getId());
 		}
+
+		List<Loan> activeLoans = loanRepository.findByIsDisbursedTrue();
+		for (Loan activeLoan : activeLoans) {
+			Optional<PayDate> optional =
+					payDateService.findEarliestDueOrPendingPayDate(activeLoan.getId());
+			if(optional.isPresent()) {
+				PayDate payDate = optional.get();
+				LocalDate end = payDate.getDate();
+				LocalDate today2 = LocalDate.now();
+				long daysDifference = ChronoUnit.DAYS.between(today2, end);
+				log.info("Number of days between today and end date: " + daysDifference);
+				activeLoan.setDaysUntilNextPay(daysDifference);
+				activeLoan.setNextPayDate(end);
+				loanRepository.save(activeLoan);
+			}
+		}
+
 
 	}
 }

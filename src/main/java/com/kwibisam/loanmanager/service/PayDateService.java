@@ -19,6 +19,11 @@ public class PayDateService {
         return payDateRepository.findEarliestDueDateByLoanId(loanId);
     }
 
+    public Optional<PayDate> findEarliestDueOrPendingPayDate(Long loanId) {
+        return payDateRepository.findEarliestDueOrPendingDateByLoanId(loanId);
+    }
+
+
     public Optional<PayDate> findEarliestPendingPayDate(Long loanId) {
         return payDateRepository.findEarliestPendingDateByLoanId(loanId);
     }

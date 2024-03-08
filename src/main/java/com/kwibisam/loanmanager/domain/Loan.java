@@ -33,6 +33,8 @@ public class Loan {
     private String purpose;
     @Column(name = "start_date")
     private LocalDate startDate;
+    private Long daysUntilNextPay;
+    private LocalDate nextPayDate;
     private String status = "SUBMITTED";
     private Double loanBalance;
     private Double totalPayOff;

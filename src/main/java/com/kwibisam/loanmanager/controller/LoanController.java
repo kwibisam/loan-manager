@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -121,6 +122,14 @@ public class LoanController {
         List<PayDate> payDateList = getPayDates(theLoan);
         loanRepository.save(theLoan);
         payDateService.saveAll(payDateList);
+        //set-first-pay-date
+        PayDate firstDate = payDateList.get(0);
+        long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(), firstDate.getDate());
+        theLoan.setDaysUntilNextPay(daysDifference);
+        theLoan.setNextPayDate(firstDate.getDate());
+        loanRepository.save(theLoan);
+
+
        return ResponseEntity.noContent().build();
     }
 
@@ -132,6 +141,7 @@ public class LoanController {
         Disbursement disbursement = existingLoan.getDisbursement();
         disbursementRepository.delete(disbursement);
         payDateService.deleteAllLoanPayDates(id);
+        existingLoan.setIsDisbursed(false);
         loanRepository.save(existingLoan);
         return ResponseEntity.noContent().build();
     }
@@ -179,6 +189,8 @@ public class LoanController {
         Loan loan = loanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
         return ResponseEntity.ok(loan.getPayDates());
     }
+
+
 
 
     private static List<PayDate> getPayDates(Loan theLoan) {
