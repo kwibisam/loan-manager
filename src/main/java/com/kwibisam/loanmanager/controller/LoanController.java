@@ -1,6 +1,7 @@
 package com.kwibisam.loanmanager.controller;
 
 import com.kwibisam.loanmanager.domain.*;
+import com.kwibisam.loanmanager.exception.IllegalUpdateException;
 import com.kwibisam.loanmanager.repository.DisbursementRepository;
 import com.kwibisam.loanmanager.repository.PayDateRepository;
 import com.kwibisam.loanmanager.repository.LoanRepository;
@@ -74,6 +75,9 @@ public class LoanController {
                 .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
 
         if(patch.getStatus() != null) {
+            if(existingLoan.getIsDisbursed()) {
+                throw new IllegalUpdateException("Cannot change status of disbursed loan");
+            }
             existingLoan.setStatus(patch.getStatus());
         }
         loanRepository.save(existingLoan);

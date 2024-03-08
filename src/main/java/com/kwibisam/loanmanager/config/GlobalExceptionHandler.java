@@ -1,6 +1,7 @@
 package com.kwibisam.loanmanager.config;
 
 import com.kwibisam.loanmanager.exception.CustomErrorResponse;
+import com.kwibisam.loanmanager.exception.IllegalUpdateException;
 import com.kwibisam.loanmanager.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,20 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 path
                 );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IllegalUpdateException.class)
+    public ResponseEntity<Object> handleIllegalUpdateException(IllegalUpdateException ex, WebRequest request) {
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+        CustomErrorResponse errorResponse = new CustomErrorResponse(
+                System.currentTimeMillis(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.name(),
+                ex.getMessage(),
+                path
+        );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
